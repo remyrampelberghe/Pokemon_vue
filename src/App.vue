@@ -2,7 +2,7 @@
   <NConfigProvider>
     <NMessageProvider>
       <NLayout>
-        <HeaderBar />
+        <HeaderBar v-if="authStore.isAuthenticated" />
         <NLayoutContent>
           <RouterView />
         </NLayoutContent>
@@ -12,7 +12,11 @@
 </template>
 
 <script setup lang="ts">
+import { useAuthStore } from '@/stores/auth.store'
+
 import HeaderBar from './components/layout/HeaderBar.vue'
+
+const authStore = useAuthStore()
 </script>
 
 <style>
