@@ -1,5 +1,16 @@
 <template>
   <div class="container">
-    <NEmpty description="Page d'accueil à implémenter (tickets 2 et 3)" />
+    <DeckList />
   </div>
 </template>
+
+<script setup lang="ts">
+import DeckList from '../components/decks/DeckList.vue'
+</script>
+
+<style scoped>
+.container {
+  max-width: 1200px;
+  margin: 20px auto;
+}
+</style>
