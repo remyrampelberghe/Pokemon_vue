@@ -9,10 +9,17 @@ import type {
 import { useStorage } from './useStorage.js'
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL
+const REQUEST_TIMEOUT_MS = Number(import.meta.env.VITE_API_TIMEOUT_MS ?? 0)
 const storage = useStorage()
 
 const request = async <T>(path: string, options: RequestInit = {}) => {
   const token = storage.get<string>('token')
+  const hasTimeout =
+    Number.isFinite(REQUEST_TIMEOUT_MS) && REQUEST_TIMEOUT_MS > 0
+  const controller = hasTimeout ? new AbortController() : null
+  const timeoutId = hasTimeout
+    ? setTimeout(() => controller?.abort(), REQUEST_TIMEOUT_MS)
+    : null
 
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
@@ -23,7 +30,21 @@ const request = async <T>(path: string, options: RequestInit = {}) => {
     headers['Authorization'] = `Bearer ${token}`
   }
 
-  const res = await fetch(`${BASE_URL}${path}`, { ...options, headers })
+  let res: Response
+  try {
+    res = await fetch(`${BASE_URL}${path}`, {
+      ...options,
+      headers,
+      ...(controller ? { signal: controller.signal } : {}),
+    })
+  } catch (error) {
+    if (error instanceof DOMException && error.name === 'AbortError') {
+      throw new Error('Requête annulée (timeout).')
+    }
+    throw error
+  } finally {
+    if (timeoutId) clearTimeout(timeoutId)
+  }
 
   if (!res.ok) {
     const data = await res.json().catch(() => ({}))

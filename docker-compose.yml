@@ -23,6 +23,13 @@ services:
     image: seyrinian/tcg-api:latest
     container_name: tcg_api
     restart: unless-stopped
+    entrypoint:
+      - sh
+      - -lc
+      - |
+        set -e
+        sed -i 's#../src/#../dist/#g' /app/prisma/seed.ts
+        exec /app/docker-entrypoint.sh
     ports:
       - '3001:3001'
     environment:
