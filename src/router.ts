@@ -5,6 +5,7 @@ import SignUpPage from './pages/auth/SignUpPage.vue'
 import DeckCreatePage from './pages/decks/DeckCreatePage.vue'
 import DeckDetailPage from './pages/decks/DeckDetailPage.vue'
 import DeckEditPage from './pages/decks/DeckEditPage.vue'
+import GamePage from './pages/GamePage.vue'
 import HomePage from './pages/HomePage.vue'
 import { useAuthStore } from './stores/auth.js'
 
@@ -12,6 +13,7 @@ export const ROUTES = {
   HOME: '/',
   SIGN_IN: '/sign-in',
   SIGN_UP: '/sign-up',
+  GAME: '/game',
   DECK_CREATE: '/decks/new',
   DECK_DETAIL: '/decks/:id',
   DECK_EDIT: '/decks/:id/edit',
@@ -21,6 +23,7 @@ const routes = [
   { path: ROUTES.SIGN_IN, component: SignInPage, meta: { guestOnly: true } },
   { path: ROUTES.SIGN_UP, component: SignUpPage, meta: { guestOnly: true } },
   { path: ROUTES.HOME, component: HomePage, meta: { requiresAuth: true } },
+  { path: ROUTES.GAME, component: GamePage, meta: { requiresAuth: true } },
   {
     path: ROUTES.DECK_CREATE,
     component: DeckCreatePage,
