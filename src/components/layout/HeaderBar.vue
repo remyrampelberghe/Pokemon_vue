@@ -15,32 +15,34 @@
         >
           API Docs
         </NButton>
+        <NButton
+          tag="a"
+          href="https://making-rerun-61323218.figma.site/"
+          target="_blank"
           text
           size="small"
         >
           Maquettes
-        <NButton v-else size="small" tertiary @click="goToSignIn">
-          Connexion
         </NButton>
-        <NText depth="3">{{ authStore.user?.username }}</NText>
-        <NButton size="small" @click="handleSignOut">Déconnexion</NButton>
-=======
+      </NSpace>
+      <NSpace align="center" :size="16">
         <NText v-if="auth.user" depth="3">{{ auth.user.username }}</NText>
         <NButton v-if="auth.isAuthenticated" size="small" @click="logout">
           Déconnexion
         </NButton>
-        <NButton v-else size="small" tertiary @click="goToSignIn"
-import { ROUTES } from '@/router'
-import { useAuthStore } from '@/stores/auth.store'
+        <NButton v-else size="small" tertiary @click="goToSignIn">
+          Connexion
+        </NButton>
+      </NSpace>
+    </NSpace>
+  </NLayoutHeader>
+</template>
 
-const apiBaseUrl = import.meta.env.VITE_API_BASE_URL as string
-const authStore = useAuthStore()
-const router = useRouter()
+<script setup lang="ts">
+import { useRouter } from 'vue-router'
 
-const handleSignOut = async () => {
-  authStore.signOut()
-=======
 import { ROUTES } from '../../router.js'
+import { useAuthStore } from '../../stores/auth.js'
 
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL as string
 const router = useRouter()
@@ -50,7 +52,6 @@ const goToSignIn = () => router.push(ROUTES.SIGN_IN)
 
 const logout = async () => {
   auth.clearSession()
->>>>>>> f3eeee8 (feat: ajout des decks)
   await router.push(ROUTES.SIGN_IN)
 }
 </script>
