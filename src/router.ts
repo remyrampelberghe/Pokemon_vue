@@ -1,21 +1,41 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
-import { useAuthStore } from '@/stores/auth.store'
-
+import SignInPage from './pages/auth/SignInPage.vue'
+import SignUpPage from './pages/auth/SignUpPage.vue'
+import DeckCreatePage from './pages/decks/DeckCreatePage.vue'
+import DeckDetailPage from './pages/decks/DeckDetailPage.vue'
+import DeckEditPage from './pages/decks/DeckEditPage.vue'
 import HomePage from './pages/HomePage.vue'
-import SignInPage from './pages/SignIn.vue'
-import SignUpPage from './pages/SignUp.vue'
+import { useAuthStore } from './stores/auth.js'
 
 export const ROUTES = {
   HOME: '/',
   SIGN_IN: '/sign-in',
   SIGN_UP: '/sign-up',
+  DECK_CREATE: '/decks/new',
+  DECK_DETAIL: '/decks/:id',
+  DECK_EDIT: '/decks/:id/edit',
 } as const
 
 const routes = [
-  { path: ROUTES.HOME, component: HomePage, meta: { requiresAuth: true } },
   { path: ROUTES.SIGN_IN, component: SignInPage, meta: { guestOnly: true } },
   { path: ROUTES.SIGN_UP, component: SignUpPage, meta: { guestOnly: true } },
+  { path: ROUTES.HOME, component: HomePage, meta: { requiresAuth: true } },
+  {
+    path: ROUTES.DECK_CREATE,
+    component: DeckCreatePage,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: ROUTES.DECK_DETAIL,
+    component: DeckDetailPage,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: ROUTES.DECK_EDIT,
+    component: DeckEditPage,
+    meta: { requiresAuth: true },
+  },
 ]
 
 const router = createRouter({
@@ -24,17 +44,17 @@ const router = createRouter({
 })
 
 router.beforeEach((to) => {
-  const authStore = useAuthStore()
+  const auth = useAuthStore()
 
-  if (to.meta.requiresAuth && !authStore.isAuthenticated) {
-    return ROUTES.SIGN_IN
+  if (to.meta.requiresAuth && !auth.isAuthenticated) {
+    return { path: ROUTES.SIGN_IN }
   }
 
-  if (to.meta.guestOnly && authStore.isAuthenticated) {
-    return ROUTES.HOME
+  if (to.meta.guestOnly && auth.isAuthenticated) {
+    return { path: ROUTES.HOME }
   }
 
-  return true
+  return undefined
 })
 
 export default router
